@@ -5,5 +5,12 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - run: sudo apt-get install texlive-xetex
+      - run: pip install scipy open_atmos_jupyter_utils matplotlib nbconvert 
+      - run: sudo apt-get install pandoc
+      - run: sudo apt-get install inkscape
+      - run: python -m nbconvert
+        --to pdf --exectute
+        MUP_L1.ipynb
+      
 
     
