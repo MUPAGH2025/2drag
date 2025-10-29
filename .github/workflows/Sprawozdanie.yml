@@ -3,6 +3,7 @@ on: push
 jobs:
   polf:
     runs-on: ubuntu-22.04
-      steps:
-        - run: sudoapt-get install texlive-xetex
+    steps:
+      - run: sudoapt-get install texlive-xetex
+
     
