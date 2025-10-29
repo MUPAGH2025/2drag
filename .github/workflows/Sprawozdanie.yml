@@ -11,4 +11,4 @@ jobs:
       - run: python -m nbconvert --to pdf --execute MUP_L1.ipynb
       - uses: actions/upload-artifact@v4
         with: 
-          path: untitled.pdf
+          path: MUP_L1.pdf
