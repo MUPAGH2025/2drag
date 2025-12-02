@@ -1,0 +1,14 @@
+name: Projekt
+on: push
+jobs: 
+  pdf:
+    runs-on: ubuntu-22.04
+    steps:
+      - run: pip install scipy pint matplotlib open_atmos_jupyter_utils ipykernel numpy
+      - uses: actions/checkout@v4
+      - run: sudo apt-get install texlive-xetex inkscape pandoc
+      - run: pip install nbconvert
+      - run: python -m nbconvert --to script --execute mpdata_2d_numpy_only.ipynb
+      - uses: actions/upload-artifact@v4
+        with: 
+          path: anim.gif
