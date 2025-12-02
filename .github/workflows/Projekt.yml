@@ -3,8 +3,8 @@ name: Projekt
 on:
   push:
     branches:
-      - main          
-  workflow_dispatch:  
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -29,22 +29,26 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y texlive-xetex inkscape pandoc
 
-      - name: Run Titan project notebook
+      - name: Execute notebook and export to PDF
         run: |
           cd PROJEKT
-          python -m nbconvert --to script --execute Projekt_MorzeMetanuNaTytanie.ipynb
+          jupyter nbconvert \
+            --to pdf \
+            --execute Projekt_MorzeMetanuNaTytanie.ipynb \
+            --output projekt.pdf
 
-      - name: Collect GIF artifacts
+      - name: Collect report artifacts (GIF + PDF)
         run: |
           mkdir -p artifacts
-          cp ./*.gif artifacts/ 2>/dev/null || true
+          # tylko rzeczy z katalogu PROJEKT, gdzie jest notebook
           cp PROJEKT/*.gif artifacts/ 2>/dev/null || true
+          cp PROJEKT/*.pdf artifacts/ 2>/dev/null || true
           echo "Zebrane pliki w artifacts/:"
           ls -la artifacts
 
-      - name: Upload GIF artifacts
+      - name: Upload report artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: projekt-gify
+          name: projekt-raport
           path: artifacts
           if-no-files-found: error
