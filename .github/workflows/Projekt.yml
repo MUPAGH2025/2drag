@@ -1,14 +1,56 @@
 name: Projekt
-on: push
-jobs: 
-  pdf:
+
+on:
+  push:
+    branches:
+      - main          # jeśli używasz innej gałęzi, zmień tu nazwę
+  workflow_dispatch:  # pozwala uruchomić ręcznie z zakładki Actions
+
+jobs:
+  build:
     runs-on: ubuntu-22.04
+
     steps:
-      - run: pip install scipy pint matplotlib open_atmos_jupyter_utils ipykernel numpy
-      - uses: actions/checkout@v4
-      - run: sudo apt-get install texlive-xetex inkscape pandoc
-      - run: pip install nbconvert
-      - run: python -m nbconvert --to script --execute mpdata_2d_numpy_only.ipynb
-      - uses: actions/upload-artifact@v4
-        with: 
-          path: anim.gif
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install scipy pint matplotlib open_atmos_jupyter_utils ipykernel numpy nbconvert
+
+      - name: Install system packages (LaTeX, Inkscape, Pandoc)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-xetex inkscape pandoc
+
+      - name: Run mpdata_2d notebook
+        run: |
+          python -m nbconvert --to script --execute mpdata_2d_numpy_only.ipynb
+
+      - name: Run Titan project notebook
+        run: |
+          cd PROJEKT
+          python -m nbconvert --to script --execute Projekt_MorzeMetanuNaTytanie.ipynb
+
+      - name: Collect GIF artifacts
+        run: |
+          mkdir -p artifacts
+          # gify z katalogu głównego (gdyby coś je tam zapisało)
+          cp ./*.gif artifacts/ 2>/dev/null || true
+          # gify z folderu PROJEKT (tam będzie m.in. anim_vel_jedna_gora_tilted_wave.gif)
+          cp PROJEKT/*.gif artifacts/ 2>/dev/null || true
+          echo "Zebrane pliki w artifacts/:"
+          ls -la artifacts
+
+      - name: Upload GIF artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: projekt-gify
+          path: artifacts
+          if-no-files-found: error
