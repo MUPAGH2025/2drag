@@ -3,8 +3,8 @@ name: Projekt
 on:
   push:
     branches:
-      - main          # jeśli używasz innej gałęzi, zmień tu nazwę
-  workflow_dispatch:  # pozwala uruchomić ręcznie z zakładki Actions
+      - main          
+  workflow_dispatch:  
 
 jobs:
   build:
@@ -41,9 +41,7 @@ jobs:
       - name: Collect GIF artifacts
         run: |
           mkdir -p artifacts
-          # gify z katalogu głównego (gdyby coś je tam zapisało)
           cp ./*.gif artifacts/ 2>/dev/null || true
-          # gify z folderu PROJEKT (tam będzie m.in. anim_vel_jedna_gora_tilted_wave.gif)
           cp PROJEKT/*.gif artifacts/ 2>/dev/null || true
           echo "Zebrane pliki w artifacts/:"
           ls -la artifacts
