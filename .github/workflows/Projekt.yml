@@ -37,12 +37,13 @@ jobs:
             --execute Projekt_MorzeMetanuNaTytanie.ipynb \
             --output projekt.pdf
 
-      - name: Collect report artifacts (GIF + PDF)
+      - name: Collect report artifacts (GIF + projekt.pdf)
         run: |
           mkdir -p artifacts
-          # tylko rzeczy z katalogu PROJEKT, gdzie jest notebook
+          # gify z katalogu PROJEKT (mogą nie istnieć – wtedy pomijamy błąd)
           cp PROJEKT/*.gif artifacts/ 2>/dev/null || true
-          cp PROJEKT/*.pdf artifacts/ 2>/dev/null || true
+          # tylko główny raport PDF
+          cp PROJEKT/projekt.pdf artifacts/
           echo "Zebrane pliki w artifacts/:"
           ls -la artifacts
 
